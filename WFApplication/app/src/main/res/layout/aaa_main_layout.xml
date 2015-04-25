@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#eeeeee">
+
+    <com.kale.wfalldemo.extra.swiprefreshlayout.VerticalSwipeRefreshLayout
+            android:id="@+id/aaa_swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <kale.mylibrary.ExRecyclerView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/aaa_waterFall_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+    </com.kale.wfalldemo.extra.swiprefreshlayout.VerticalSwipeRefreshLayout>
+
+    <ImageView
+            android:id="@+id/aaa_float_imageButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/aaa_go_top_icon"
+            android:layout_gravity="right|bottom"/>
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/aaa_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:layout_gravity="center_horizontal|top"/>
+
+</FrameLayout>
