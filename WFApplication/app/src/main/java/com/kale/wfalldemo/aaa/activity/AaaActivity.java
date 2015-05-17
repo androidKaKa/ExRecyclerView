@@ -4,13 +4,18 @@ package com.kale.wfalldemo.aaa.activity;
 import com.kale.wfalldemo.BaseActivity;
 import com.kale.wfalldemo.R;
 import com.kale.wfalldemo.ResponseCallback;
-import com.kale.wfalldemo.aaa.adapter.AaaWaterFallAdapter;
+import com.kale.wfalldemo.aaa.adapter.AaaWaterFallItem01;
+import com.kale.wfalldemo.aaa.adapter.AaaWaterFallItem02;
+import com.kale.wfalldemo.aaa.adapter.CommonRvAdapter;
+import com.kale.wfalldemo.aaa.adapter.DataManager;
+import com.kale.wfalldemo.aaa.adapter.RvAdapterItem;
 import com.kale.wfalldemo.aaa.mode.Photo;
 import com.kale.wfalldemo.aaa.mode.PhotoData;
 import com.kale.wfalldemo.extra.swiprefreshlayout.VerticalSwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -27,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.List;
+
 import kale.mylibrary.ExRecyclerView;
 import kale.mylibrary.ExStaggeredGridLayoutManager;
 import kale.mylibrary.OnRecyclerViewScrollListener;
@@ -34,15 +41,16 @@ import kale.mylibrary.OnRecyclerViewScrollListener;
 
 /**
  * @author Jack Tony
- * @brief
  * @date 2015/4/6
  */
 public class AaaActivity extends BaseActivity implements ResponseCallback {
 
     private final String TAG = getClass().getSimpleName();
 
+    private Context mContext;
+
     private Toolbar toolbar;
-    
+
     /** 垂直方向下拉刷新的控件 */
     private VerticalSwipeRefreshLayout swipeRefreshLayout;
 
@@ -58,8 +66,13 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
 
     private ImageView floatIV;
 
+    private DataManager mDataManager = new DataManager();
+
+    private boolean isFirstLoadData = true;
+
     @Override
     protected int getContentViewId() {
+        mContext = this;
         return R.layout.aaa_main_layout;
     }
 
@@ -73,6 +86,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         headerIv = (ImageView) headerRoot.findViewById(R.id.aaa_header_imageView);
         floatIV = (ImageView) findViewById(R.id.aaa_float_imageButton);
         footerBtn = new Button(this);
+
     }
 
     @Override
@@ -88,7 +102,33 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         setTabView();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDataManager.loadNewData(this);
+    }
+
     private void setTabView() {
+    }
+
+    class AaaWaterFallAdapter extends CommonRvAdapter<PhotoData> {
+
+        protected AaaWaterFallAdapter(Context context, List<PhotoData> data) {
+            super(context, data);
+        }
+
+        @Override
+        protected RvAdapterItem initItemView(int type) {
+            switch (type) {
+                case PhotoData.FIRST:
+                    return new AaaWaterFallItem01(mContext, R.layout.aaa_waterfall_item);
+                case PhotoData.Second:
+                    return new AaaWaterFallItem02(mContext, R.layout.aaa_waterfall_item02);
+                default:
+            }
+            return null;
+        }
+
     }
 
     /*    private Drawable toolbarBgDrawable;
@@ -126,7 +166,9 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
                     photo.photo.width = 800;
                     photo.photo.height = 1000;
                     photo.photo.path = "http://images.cnitblog.com/blog/651487/201501/292018114419518.png";
-                    waterFallAdapter.insert(waterFallAdapter.getDataList(), photo, 0);
+
+                    mDataManager.getData().add(0, photo);
+                    waterFallAdapter.updateData(mDataManager.getData());
                     return true;
                 } else {
                     return false;
@@ -168,7 +210,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
             public void onRefresh() {
                 if (!isLoadingData) {
                     //Log.d(TAG, "加载新的数据");
-                    ((AaaWaterFallAdapter) waterFallRcv.getAdapter()).loadNewData();
+                    mDataManager.loadNewData(AaaActivity.this);
                     isLoadingData = true;
                 }
             }
@@ -183,8 +225,6 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         // 设置头部或底部的操作应该在setAdapter之前
         waterFallRcv.addHeaderView(headerLl);
         waterFallRcv.addFooterView(footerBtn);
-
-        
 
         StaggeredGridLayoutManager layoutManager = new ExStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         GridLayoutManager layoutManager2 = new GridLayoutManager(this, 2);
@@ -218,7 +258,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
                 if (!isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "loading old data");
-                    waterFallAdapter.loadOldData();
+                    mDataManager.loadOldData(AaaActivity.this);
                     footerBtn.setVisibility(View.VISIBLE);
                 }
             }
@@ -229,7 +269,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
                 setToolbarBgByScrollDistance(distanceY);
             }
         });
-        
+
         /**
          * 监听点击和长按事件
          */
@@ -237,7 +277,8 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
             @Override
             public void onItemClick(View view, int position) {
                 Toast.makeText(AaaActivity.this, "on click", Toast.LENGTH_SHORT).show();
-                waterFallAdapter.remove(waterFallAdapter.getDataList(), position);
+                mDataManager.getData().remove(position);
+                waterFallAdapter.updateData(mDataManager.getData());
             }
         });
         waterFallRcv.setOnItemLongClickListener(new ExRecyclerView.OnItemLongClickListener() {
@@ -247,8 +288,6 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
                 return true;
             }
         });
-        waterFallAdapter = new AaaWaterFallAdapter(this);
-        waterFallRcv.setAdapter(waterFallAdapter);
     }
 
     private float headerHeight;
@@ -310,17 +349,23 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
 
 
     @Override
-    public void onResponse(Object object) {
+    public void onSuccess(Object object) {
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setRefreshing(false);
         }
         isLoadingData = false;
         footerBtn.setVisibility(View.GONE);
+        if (isFirstLoadData) {
+            waterFallAdapter = new AaaWaterFallAdapter(mContext, (List<PhotoData>) object);
+            waterFallRcv.setAdapter(waterFallAdapter);
+            isFirstLoadData = false;
+        }
+        waterFallAdapter.updateData(mDataManager.getData());
     }
 
     @Override
     public void onError(String msg) {
-
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
     }
 
     public static int getToolbarHeight(Context context) {

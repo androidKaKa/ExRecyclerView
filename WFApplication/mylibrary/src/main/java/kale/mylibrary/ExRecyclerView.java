@@ -57,10 +57,10 @@ public class ExRecyclerView extends RecyclerView {
 
         @Override
         public int getSpanSize(int position) {
-            ExBaseRecyclerAdapter adapter = (ExBaseRecyclerAdapter) getAdapter();
+            BaseRecyclerAdapter adapter = (BaseRecyclerAdapter) getAdapter();
             // 如果是头或底的类型，那么就设置横跨所有列
-            if (adapter.getItemViewType(position) == ExBaseRecyclerAdapter.VIEW_TYPES.HEADER ||
-                    adapter.getItemViewType(position) == ExBaseRecyclerAdapter.VIEW_TYPES.FOOTER) {
+            if (adapter.getItemViewType(position) == BaseRecyclerAdapter.VIEW_TYPES.HEADER ||
+                    adapter.getItemViewType(position) == BaseRecyclerAdapter.VIEW_TYPES.FOOTER) {
                 return mSpanSize;
             }
             return 1;
@@ -100,11 +100,11 @@ public class ExRecyclerView extends RecyclerView {
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
-        if (adapter instanceof ExBaseRecyclerAdapter) {
-            ((ExBaseRecyclerAdapter) adapter).mOnItemClickListener = mOnItemClickListener;
-            ((ExBaseRecyclerAdapter) adapter).mOnItemLongClickListener = mOnItemLongClickListener;
-            ((ExBaseRecyclerAdapter) adapter).customHeaderView = mHeaderView;
-            ((ExBaseRecyclerAdapter) adapter).customFooterView = mFooterView;
+        if (adapter instanceof BaseRecyclerAdapter) {
+            ((BaseRecyclerAdapter) adapter).mOnItemClickListener = mOnItemClickListener;
+            ((BaseRecyclerAdapter) adapter).mOnItemLongClickListener = mOnItemLongClickListener;
+            ((BaseRecyclerAdapter) adapter).customHeaderView = mHeaderView;
+            ((BaseRecyclerAdapter) adapter).customFooterView = mFooterView;
         }
     }
 
