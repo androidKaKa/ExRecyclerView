@@ -1,36 +1,38 @@
 package kale.mylibrary;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 /**
  * @author Jack Tony
  * @brief recycleView的基础适配器，处理了添加头和底的逻辑
  * @date 2015/4/10
  */
-public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected final String TAG = getClass().getSimpleName();
 
-    public View customHeaderView = null;
+    protected View customHeaderView = null;
 
-    public View customFooterView = null;
+    protected View customFooterView = null;
 
-    public ExRecyclerView.OnItemClickListener mOnItemClickListener;
+    protected AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public ExRecyclerView.OnItemLongClickListener mOnItemLongClickListener;
+    protected AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 
     /**
      * view的基本类型，这里只有头/底部/普通，在子类中可以扩展
      */
     class VIEW_TYPES {
 
-        public static final int HEADER = 5250;
+        public static final int HEADER = 7;
 
-        public static final int FOOTER = 7038;
+        public static final int FOOTER = 8;
 
-        public static final int NORMAL = 3501;
+        public static final int NORMAL = 9;
     }
 
     class SimpleViewHolder extends RecyclerView.ViewHolder {
@@ -47,7 +49,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == VIEW_TYPES.FOOTER && customFooterView != null) {
             return new SimpleViewHolder(customFooterView);
         }
-        return onCreateItemViewHolder(viewType);
+        return onCreateItemViewHolder(parent.getContext(), viewType);
     }
 
     /**
@@ -55,7 +57,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
      *
      * @param viewType 视图类型
      */
-    protected abstract RecyclerView.ViewHolder onCreateItemViewHolder(int viewType);
+    protected abstract RecyclerView.ViewHolder onCreateItemViewHolder(Context context, int viewType);
 
     /**
      * 返回adapter中总共的item数目，包括头部和底部
@@ -119,7 +121,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mOnItemClickListener.onItemClick(viewHolder.itemView, pos);
+                        mOnItemClickListener.onItemClick(null, viewHolder.itemView, pos, pos);
                     }
                 });
             }
@@ -128,7 +130,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
                 viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        return mOnItemLongClickListener.onItemLongClick(viewHolder.itemView, pos);
+                        return mOnItemLongClickListener.onItemLongClick(null, viewHolder.itemView, pos, pos);
                     }
                 });
             }

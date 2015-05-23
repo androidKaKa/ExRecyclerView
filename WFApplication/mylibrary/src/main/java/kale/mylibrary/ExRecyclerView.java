@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AdapterView;
 
 /**
  * @author Jack Tony
@@ -124,28 +125,18 @@ public class ExRecyclerView extends RecyclerView {
     /**
      * 设置item的点击事件
      */
-    public interface OnItemClickListener {
+    private static AdapterView.OnItemClickListener mOnItemClickListener = null;
 
-        public void onItemClick(View view, int position);
-    }
-
-    private static OnItemClickListener mOnItemClickListener = null;
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
 
     /**
      * 设置item的长按事件
      */
-    public interface OnItemLongClickListener {
+    public static AdapterView.OnItemLongClickListener mOnItemLongClickListener = null;
 
-        public boolean onItemLongClick(View view, int position);
-    }
-
-    public static OnItemLongClickListener mOnItemLongClickListener = null;
-
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+    public void setOnItemLongClickListener(AdapterView.OnItemLongClickListener listener) {
         mOnItemLongClickListener = listener;
     }
 }

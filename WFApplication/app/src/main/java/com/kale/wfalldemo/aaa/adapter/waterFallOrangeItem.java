@@ -10,12 +10,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.TextView;
 
+import kale.mylibrary.RcvAdapterItem;
+
 /**
  * @author Jack Tony
  * @brief
  * @date 2015/4/10
  */
-public class AaaWaterFallItem01 extends RvAdapterItem<PhotoData> {
+public class waterFallOrangeItem extends RcvAdapterItem<PhotoData> {
 
     /** 内容主体的图片 */
     public DynamicHeightSimpleDraweeView contentSdv;
@@ -31,7 +33,7 @@ public class AaaWaterFallItem01 extends RvAdapterItem<PhotoData> {
      */
     public TextView positionTv;
 
-    public AaaWaterFallItem01(Context context, int layoutResId) {
+    public waterFallOrangeItem(Context context, int layoutResId) {
         super(context, layoutResId);
         contentSdv = getView(R.id.aaa_wf_item_content_DraweeView);
         descriptionTv = getView(R.id.aaa_wf_item_description_textView);

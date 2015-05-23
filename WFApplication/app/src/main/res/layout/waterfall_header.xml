@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/aaa_header_linearLayout"
+              android:id="@+id/header_linearLayout"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:id="@+id/aaa_header_imageView"
+            android:id="@+id/header_imageView"
             android:src="@drawable/default_head_pic"
             android:scaleType="fitXY"/>
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.kale.wfalldemo.aaa.mode;
 
-public class PhotoData implements IAdapterModel {
+import kale.mylibrary.AdapterModel;
+
+public class PhotoData implements AdapterModel {
 
     public static final int FIRST = 1;
     public static final int Second = 2;

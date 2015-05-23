@@ -4,11 +4,9 @@ package com.kale.wfalldemo.aaa.activity;
 import com.kale.wfalldemo.BaseActivity;
 import com.kale.wfalldemo.R;
 import com.kale.wfalldemo.ResponseCallback;
-import com.kale.wfalldemo.aaa.adapter.AaaWaterFallItem01;
-import com.kale.wfalldemo.aaa.adapter.AaaWaterFallItem02;
-import com.kale.wfalldemo.aaa.adapter.CommonRvAdapter;
 import com.kale.wfalldemo.aaa.adapter.DataManager;
-import com.kale.wfalldemo.aaa.adapter.RvAdapterItem;
+import com.kale.wfalldemo.aaa.adapter.waterFallOrangeItem;
+import com.kale.wfalldemo.aaa.adapter.waterFallWhiteItem;
 import com.kale.wfalldemo.aaa.mode.Photo;
 import com.kale.wfalldemo.aaa.mode.PhotoData;
 import com.kale.wfalldemo.extra.swiprefreshlayout.VerticalSwipeRefreshLayout;
@@ -16,8 +14,8 @@ import com.kale.wfalldemo.extra.swiprefreshlayout.VerticalSwipeRefreshLayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,17 +24,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import kale.mylibrary.CommonRcvAdapter;
+import kale.mylibrary.DividerGridItemDecoration;
 import kale.mylibrary.ExRecyclerView;
 import kale.mylibrary.ExStaggeredGridLayoutManager;
 import kale.mylibrary.OnRecyclerViewScrollListener;
+import kale.mylibrary.RcvAdapterItem;
 
 
 /**
@@ -78,15 +81,14 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
 
     @Override
     protected void findViews() {
-        toolbar = (Toolbar) findViewById(R.id.aaa_toolbar);
-        swipeRefreshLayout = (VerticalSwipeRefreshLayout) findViewById(R.id.aaa_swipeRefreshLayout);
-        waterFallRcv = (ExRecyclerView) findViewById(R.id.aaa_waterFall_recyclerView);
-        View headerRoot = LayoutInflater.from(this).inflate(R.layout.aaa_waterfall_header, null);
-        headerLl = (LinearLayout) headerRoot.findViewById(R.id.aaa_header_linearLayout);
-        headerIv = (ImageView) headerRoot.findViewById(R.id.aaa_header_imageView);
-        floatIV = (ImageView) findViewById(R.id.aaa_float_imageButton);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        swipeRefreshLayout = (VerticalSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        waterFallRcv = (ExRecyclerView) findViewById(R.id.waterFall_recyclerView);
+        View headerRoot = LayoutInflater.from(this).inflate(R.layout.waterfall_header, null);
+        headerLl = (LinearLayout) headerRoot.findViewById(R.id.header_linearLayout);
+        headerIv = (ImageView) headerRoot.findViewById(R.id.header_imageView);
+        floatIV = (ImageView) findViewById(R.id.float_imageButton);
         footerBtn = new Button(this);
-
     }
 
     @Override
@@ -111,22 +113,22 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
     private void setTabView() {
     }
 
-    class AaaWaterFallAdapter extends CommonRvAdapter<PhotoData> {
+    class AaaWaterFallAdapter extends CommonRcvAdapter<PhotoData> {
 
-        protected AaaWaterFallAdapter(Context context, List<PhotoData> data) {
-            super(context, data);
+        protected AaaWaterFallAdapter(List<PhotoData> data) {
+            super(data);
         }
 
+        @NonNull
         @Override
-        protected RvAdapterItem initItemView(int type) {
+        protected RcvAdapterItem initItemView(Context context, int type) {
             switch (type) {
                 case PhotoData.FIRST:
-                    return new AaaWaterFallItem01(mContext, R.layout.aaa_waterfall_item);
+                    return new waterFallOrangeItem(context, R.layout.aaa_waterfall_orange_item);
                 case PhotoData.Second:
-                    return new AaaWaterFallItem02(mContext, R.layout.aaa_waterfall_item02);
                 default:
+                    return new waterFallWhiteItem(context, R.layout.aaa_waterfall_white_item);
             }
-            return null;
         }
 
     }
@@ -226,10 +228,19 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         waterFallRcv.addHeaderView(headerLl);
         waterFallRcv.addFooterView(footerBtn);
 
-        StaggeredGridLayoutManager layoutManager = new ExStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        GridLayoutManager layoutManager2 = new GridLayoutManager(this, 2);
-        waterFallRcv.setLayoutManager(layoutManager);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new ExStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        //GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, true);// 可替换
+        waterFallRcv.setLayoutManager(staggeredGridLayoutManager);
 
+        // 添加分割线
+        waterFallRcv.addItemDecoration(new DividerGridItemDecoration(this));
+        //waterFallRcv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));//可替换
+
+        List<PhotoData> list = new ArrayList<>();// 先放一个空的list
+        waterFallAdapter = new AaaWaterFallAdapter(list);
+        waterFallRcv.setAdapter(waterFallAdapter);
+        
         // 不显示滚动到顶部/底部的阴影（减少绘制）
         waterFallRcv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         //waterFallRcv.setClipToPadding(true);
@@ -273,17 +284,19 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         /**
          * 监听点击和长按事件
          */
-        waterFallRcv.setOnItemClickListener(new ExRecyclerView.OnItemClickListener() {
+        waterFallRcv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(AaaActivity.this, "on click", Toast.LENGTH_SHORT).show();
                 mDataManager.getData().remove(position);
                 waterFallAdapter.updateData(mDataManager.getData());
             }
         });
-        waterFallRcv.setOnItemLongClickListener(new ExRecyclerView.OnItemLongClickListener() {
+        waterFallRcv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
             @Override
-            public boolean onItemLongClick(View view, int position) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(AaaActivity.this, "on long click", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -310,6 +323,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
                 //Log.d(TAG, "headerHeight" + headerHeight);
             }
         });
+
     }
 
     /**
@@ -356,8 +370,7 @@ public class AaaActivity extends BaseActivity implements ResponseCallback {
         isLoadingData = false;
         footerBtn.setVisibility(View.GONE);
         if (isFirstLoadData) {
-            waterFallAdapter = new AaaWaterFallAdapter(mContext, (List<PhotoData>) object);
-            waterFallRcv.setAdapter(waterFallAdapter);
+            waterFallAdapter.updateData((List<PhotoData>) object);
             isFirstLoadData = false;
         }
         waterFallAdapter.updateData(mDataManager.getData());

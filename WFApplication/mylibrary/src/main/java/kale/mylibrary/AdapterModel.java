@@ -1,10 +1,10 @@
-package com.kale.wfalldemo.aaa.mode;
+package kale.mylibrary;
 
 /**
  * @author Jack Tony
  * @date 2015/5/16
  */
-public interface IAdapterModel {
+public interface AdapterModel {
 
     public int getDataTypeCount();
 
