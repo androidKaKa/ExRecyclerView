@@ -1,13 +1,15 @@
 # ExRecyclerView  
 --  
 
-可以设置头/低部，item点击/长按监听的recyclerView。  
+可以设置头/底部，Item点击/长按监听的recyclerView。  
 
 可利用`ExStaggeredGridLayoutManager`给瀑布流设置头/底
 
 利用`DividerGridItemDecoration`或`DividerItemDecoration`来添加分割线  
 
 可利用`OnRecyclerViewScrollListener`监听滑动到顶部、底部的事件，还可以监听滑动的距离  
+
+本项目中demo的adapter用的是通用的adapter（CommonRcvAdapter）来做的，如果你希望用recyclerView的adapter来做，你只需要将自己的adapter继承自`BaseRecyclerAdapter`即可。如果你希望了解下通用的adapter的构建模式，请参考：[https://github.com/tianzhijiexian/CommonAdapter](https://github.com/tianzhijiexian/CommonAdapter "通用的适配器")
 
 ## 截图  
 ![image](./demoPic/demo01.png)  
